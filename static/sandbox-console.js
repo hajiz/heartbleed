@@ -129,7 +129,7 @@ var Sandbox = {
 
 			$("#sandbox").addClass("loading");
 			var self = this;
-			$.ajax('http://localhost:5000/hello?url=' + command, {
+			$.ajax('hello?url=' + command, {
 				success: function (response) {
 					var item = {
 						command : command
@@ -177,7 +177,7 @@ var Sandbox = {
 			// Set up the View Options
 			this.resultPrefix = opts.resultPrefix || "  => ";
 			this.tabCharacter = opts.tabCharacter || "\t";
-			this.placeholder = opts.placeholder || "// Enter the domain and hit enter (e.g. facebook.com), or :help";
+			this.placeholder = opts.placeholder || "// Enter the domain (without https) and hit enter (e.g. www.facebook.com), or :help";
 			this.helpText = opts.helpText || "type a domain into the console, hit enter to evaluate. \n[up/down] to scroll through history, ':clear' to reset it.";
 
 			// Bind to the model's change event to update the View
