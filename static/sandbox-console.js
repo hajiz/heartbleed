@@ -128,50 +128,34 @@ var Sandbox = {
 				return false;
 
 			$("#sandbox").addClass("loading");
+			var self = this;
 			$.ajax('http://localhost:5000/hello?url=' + command, {
-				success: function () {
+				success: function (response) {
 					var item = {
 						command : command
 					};
 			
 					// Evaluate the command and store the eval result, adding some basic classes for syntax-highlighting
-			try {
-				item.result = this.get('iframe') ? this.iframeEval(ajaxCommand) : eval.call(window, ajaxCommand);
-				$("#sandbox").removeClass("loading");
-                                item.result = item.result.responseText;
-				if ( _.isUndefined(item.result) ) item._class = "undefined";
-				if ( _.isNumber(item.result) ) item._class = "number";
-				if ( _.isString(item.result) ) item._class = "string";
-			} catch(error) {
-				item.result = error.toString();
-				item._class = "error";
-			}
+					$("#sandbox").removeClass("loading");
+                                	item.result = response;
+					if ( _.isUndefined(item.result) ) item._class = "undefined";
+					if ( _.isNumber(item.result) ) item._class = "number";
+					if ( _.isString(item.result) ) item._class = "string";
 
-			// Add the item to the history
-			this.addHistory(item);
+					// Add the item to the history
+					self.addHistory(item);
 				},
-				error: function () {
+				error: function (response) {
+					var item = {
+						command: command
+					};
+
+					item.result = response.responseText;
+					item._class = "error";
+					self.addHistory(item);
 				}
 			});
-			var item = {
-				command : command
-			};
-			
-			// Evaluate the command and store the eval result, adding some basic classes for syntax-highlighting
-			try {
-				item.result = this.get('iframe') ? this.iframeEval(ajaxCommand) : eval.call(window, ajaxCommand);
-				$("#sandbox").show(); //removeClass("loading");
-                                item.result = item.result.responseText;
-				if ( _.isUndefined(item.result) ) item._class = "undefined";
-				if ( _.isNumber(item.result) ) item._class = "number";
-				if ( _.isString(item.result) ) item._class = "string";
-			} catch(error) {
-				item.result = error.toString();
-				item._class = "error";
-			}
-
-			// Add the item to the history
-			return this.addHistory(item);
+			return this;
 		}
 	}),
 

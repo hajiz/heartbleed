@@ -29,14 +29,14 @@
 	        border-radius: 10px;
 	//max-width:640px;
 	width: 90%;
-	height: 90%;
+	//height: 500px;
 	margin:30px auto;
 }
 #sandbox pre.output {
 	display:block;
 	white-space:pre;
 	width:100%;
-	height:285px;
+	height:485px;
 	overflow-y:auto;
 	position:relative;
 	padding:0;
@@ -107,4 +107,25 @@
 #sandbox pre.output::-webkit-scrollbar-button {
 	width:0;
 	height:0;
+}
+
+.credits {
+	margin: 50px;
+	font-family: Arial;
+	border: 4px dotted #0099FF;
+	border-radius: 30px;
+	padding: 20px;
+}
+
+.credits a, .credits a:visited, .credits a:hover {
+	color: red;
+}
+
+.credits h1 {
+	color: #0099FF;
+}
+
+.creditline {
+	margin-left: 20px;
+	-webkit-margin-start: 20px;
 }
