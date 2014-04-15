@@ -9,3 +9,7 @@ I have forked some of the projects and scripts which were available online and s
 * Javascript sandbox: https://github.com/josscrowcroft/javascript-sandbox-console
 
 * Flask: http://flask.pocoo.org/docs/quickstart/#a-minimal-application
+
+==================================================
+
+The application in action: http://heartbleeding.herokuapp.com/
